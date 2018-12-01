@@ -4,6 +4,7 @@
 
 #include <memory>
 #include <tuple>
+#include <vector>
 #include <boost/compute.hpp>
 #include <CL/cl.h>
 
@@ -40,6 +41,9 @@ namespace anie
 	private:
 		std::shared_ptr<std::tuple<boost::compute::device, boost::compute::context, boost::compute::command_queue>> data_;
 	};
+
+	std::vector<device_info> get_devices();
+	device get_default_device();
 }
 
 #endif

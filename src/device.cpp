@@ -58,4 +58,14 @@ namespace anie
 	{
 		return std::get<2>(*data_);
 	}
+
+	std::vector<device_info> get_devices()
+	{
+		return boost::compute::system::devices();
+	}
+	device get_default_device()
+	{
+		static device dev = boost::compute::system::default_device();
+		return dev;
+	}
 }
