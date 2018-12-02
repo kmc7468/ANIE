@@ -2,7 +2,9 @@
 #define ANIE_HEADER_DEVICE_HPP
 #include <anie/config.hpp>
 
+#include <exception>
 #include <memory>
+#include <stdexcept>
 #include <tuple>
 #include <vector>
 #include <boost/compute.hpp>
@@ -17,12 +19,12 @@ namespace anie
 	public:
 		device() noexcept = default;
 		device(const device_info& device_info);
-		device(const device& device);
+		device(const device& device) noexcept;
 		device(device&& device) noexcept;
 		~device() = default;
 
 	public:
-		device& operator=(const device& device);
+		device& operator=(const device& device) noexcept;
 		device& operator=(device&& device) noexcept;
 		bool operator==(const device& device) const;
 		bool operator!=(const device& device) const;
@@ -43,6 +45,11 @@ namespace anie
 
 	std::vector<device_info> get_devices();
 	device get_default_device();
+
+	class diff_device_error : public std::runtime_error
+	{
+		using std::runtime_error::runtime_error;
+	};
 }
 
 #endif

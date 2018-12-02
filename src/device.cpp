@@ -11,14 +11,14 @@ namespace anie
 		data_ = std::make_shared<decltype(data_)::element_type>(
 			std::make_tuple(std::move(device_info_copied), std::move(context), std::move(queue)));
 	}
-	device::device(const device& device)
+	device::device(const device& device) noexcept
 		: data_(device.data_)
 	{}
 	device::device(device&& device) noexcept
 		: data_(std::move(device.data_))
 	{}
 
-	device& device::operator=(const device& device)
+	device& device::operator=(const device& device) noexcept
 	{
 		data_ = device.data_;
 		return *this;
