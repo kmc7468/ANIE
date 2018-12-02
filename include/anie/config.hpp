@@ -13,11 +13,7 @@
 
 namespace anie
 {
-#ifndef ANIE_ARITHMETIC_TYPE
-#	define ANIE_ARITHMETIC_TYPE double
-#endif
-
-	using arithemtic_type = ANIE_ARITHMETIC_TYPE;
+	using arithemtic_type = double;
 }
 
 #endif
