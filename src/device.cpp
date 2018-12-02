@@ -28,6 +28,20 @@ namespace anie
 		data_ = std::move(device.data_);
 		return *this;
 	}
+	bool device::operator==(const device& device) const
+	{
+		if (empty()) return device.empty();
+		if (device.empty()) return false;
+
+		return std::get<0>(*data_) == std::get<0>(*device.data_);
+	}
+	bool device::operator!=(const device& device) const
+	{
+		if (empty()) return !device.empty();
+		if (device.empty()) return true;
+
+		return std::get<0>(*data_) != std::get<0>(*device.data_);
+	}
 
 	void device::reset() noexcept
 	{
@@ -50,11 +64,7 @@ namespace anie
 	{
 		return std::get<1>(*data_);
 	}
-	const boost::compute::command_queue& device::queue() const
-	{
-		return std::get<2>(*data_);
-	}
-	boost::compute::command_queue& device::queue()
+	boost::compute::command_queue& device::queue() const
 	{
 		return std::get<2>(*data_);
 	}

@@ -24,8 +24,8 @@ namespace anie
 	public:
 		device& operator=(const device& device);
 		device& operator=(device&& device) noexcept;
-		bool operator==(const device& device) = delete;
-		bool operator!=(const device& device) = delete;
+		bool operator==(const device& device) const;
+		bool operator!=(const device& device) const;
 
 	public:
 		void reset() noexcept;
@@ -35,8 +35,7 @@ namespace anie
 	public:
 		const boost::compute::device& data() const;
 		const boost::compute::context& context() const;
-		const boost::compute::command_queue& queue() const;
-		boost::compute::command_queue& queue();
+		boost::compute::command_queue& queue() const;
 
 	private:
 		std::shared_ptr<std::tuple<boost::compute::device, boost::compute::context, boost::compute::command_queue>> data_;
