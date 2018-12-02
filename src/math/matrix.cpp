@@ -56,6 +56,16 @@ namespace anie
 		return data_.size() / height_;
 	}
 
+	void matrix::copy_to(std::vector<arithemtic_type>& vector) const
+	{
+		if (vector.size() < data_.size())
+		{
+			vector.resize(data_.size());
+		}
+
+		copy_to(vector.data());
+	}
+
 	anie::device matrix::device() const noexcept
 	{
 		return device_;

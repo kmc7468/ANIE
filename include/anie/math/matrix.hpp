@@ -5,6 +5,7 @@
 #include <anie/device.hpp>
 
 #include <cstddef>
+#include <vector>
 #include <boost/compute.hpp>
 
 namespace anie
@@ -27,6 +28,18 @@ namespace anie
 
 	public:
 		std::size_t width() const noexcept;
+
+		void copy_to(std::vector<arithemtic_type>& vector) const;
+		template<typename Iterator_>
+		void copy_to(Iterator_ start) const
+		{
+			copy_to(start, data_.size());
+		}
+		template<typename Iterator_>
+		void copy_to(Iterator_ start, std::size_t size) const
+		{
+			boost::compute::copy(data_.begin(), data_.begin() + size, start, device_.queue());
+		}
 
 	public:
 		anie::device device() const noexcept;
