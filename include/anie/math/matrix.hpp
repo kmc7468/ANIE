@@ -25,6 +25,7 @@ namespace anie
 		matrix& operator=(matrix&& matrix) noexcept;
 		bool operator==(const matrix& matrix) const;
 		bool operator!=(const matrix& matrix) const;
+		matrix operator*(const matrix& matrix) const;
 
 	public:
 		std::size_t width() const noexcept;
@@ -45,7 +46,7 @@ namespace anie
 		anie::device device() const noexcept;
 		std::size_t height() const noexcept;
 
-	private:
+	public:
 		boost::compute::vector<arithemtic_type> data_;
 		anie::device device_;
 		std::size_t height_;

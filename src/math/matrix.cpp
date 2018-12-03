@@ -1,6 +1,9 @@
 #include <anie/math/matrix.hpp>
 
+#include <anie/details/kernels.hpp>
+
 #include <cassert>
+#include <cstdint>
 
 namespace anie
 {
@@ -49,6 +52,31 @@ namespace anie
 		assert(device_ == matrix.device_);
 
 		return !boost::compute::equal(data_.begin(), data_.end(), matrix.data_.begin(), matrix.data_.end(), device_.queue());
+	}
+	matrix matrix::operator*(const matrix& matrix) const
+	{
+		assert(device_ == matrix.device_);
+
+		const std::size_t width = data_.size() / height_;
+		const std::size_t matrix_width = matrix.data_.size() / matrix.height_;
+
+		assert(width == matrix.height_);
+
+		static const std::size_t global_work_size[] = { matrix_width, height_ };
+
+		static boost::compute::program program =
+			boost::compute::program::build_with_source(details::kernel_matrix_multiply, device_.context());
+		boost::compute::kernel kernel = program.create_kernel("matrix_multiply");
+
+		anie::matrix result(device_, matrix_width, height_);
+		kernel.set_arg(0, result.data_);
+		kernel.set_arg(1, data_);
+		kernel.set_arg(2, matrix.data_);
+		kernel.set_arg(3, static_cast<std::uint32_t>(width));
+		kernel.set_arg(4, static_cast<std::uint32_t>(matrix_width));
+
+		device_.queue().enqueue_nd_range_kernel(kernel, 2, nullptr, global_work_size, nullptr);
+		return result;
 	}
 
 	std::size_t matrix::width() const noexcept
