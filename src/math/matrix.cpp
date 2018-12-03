@@ -140,6 +140,23 @@ namespace anie
 		copy_from(vector.begin(), vector.end());
 	}
 
+	matrix matrix::transpose() const
+	{
+		static boost::compute::program program =
+			boost::compute::program::build_with_source(details::kernel_matrix_transpose, device_.context());
+		boost::compute::kernel kernel = program.create_kernel("matrix_transpose");
+
+		matrix result(device_, height_, width());
+
+		kernel.set_arg(0, result.data_);
+		kernel.set_arg(1, data_);
+		kernel.set_arg(2, static_cast<std::uint32_t>(width()));
+		kernel.set_arg(3, static_cast<std::uint32_t>(height_));
+
+		device_.queue().enqueue_1d_range_kernel(kernel, 0, height_, 0);
+		return result;
+	}
+
 	anie::device matrix::device() const noexcept
 	{
 		return device_;

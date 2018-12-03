@@ -52,6 +52,8 @@ namespace anie
 			boost::compute::copy(start, end, data_.begin(), device_.queue());
 		}
 
+		matrix transpose() const;
+
 	public:
 		anie::device device() const noexcept;
 		std::size_t height() const noexcept;

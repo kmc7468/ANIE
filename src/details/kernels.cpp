@@ -47,4 +47,16 @@ namespace anie::details
 			dest[index] = sum;
 		}
 	);
+	const std::string kernel_matrix_transpose = BOOST_COMPUTE_STRINGIZE_SOURCE(
+		__kernel void matrix_transpose(__global double* dest, __global const double* src,
+								 const uint src_width, const uint src_height)
+		{
+			const uint y = get_global_id(0);
+
+			for (uint i = 0; i < src_width; ++i)
+			{
+				dest[i * src_height + y] = src[y * src_width + i];
+			}
+		}
+	);
 }
