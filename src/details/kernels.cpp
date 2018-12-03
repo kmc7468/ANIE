@@ -4,8 +4,32 @@
 
 namespace anie::details
 {
+	const std::string kernel_matrix_add = BOOST_COMPUTE_STRINGIZE_SOURCE(
+		__kernel void matrix_add(__global double* lhs, __global const double* rhs,
+								 const uint width)
+		{
+			const uint y = get_global_id(0);
+			
+			for (uint i = 0; i < width; ++i)
+			{
+				lhs[width * y + i] += rhs[width * y + i];
+			}
+		}
+	);
+	const std::string kernel_matrix_sub = BOOST_COMPUTE_STRINGIZE_SOURCE(
+		__kernel void matrix_sub(__global double* lhs, __global const double* rhs,
+								 const uint width)
+		{
+			const uint y = get_global_id(0);
+
+			for (uint i = 0; i < width; ++i)
+			{
+				lhs[width * y + i] -= rhs[width * y + i];
+			}
+		}
+	);
 	const std::string kernel_matrix_multiply = BOOST_COMPUTE_STRINGIZE_SOURCE(
-		__kernel void matrix_multiply(__global double* dest, __global double* src_lhs, __global double* src_rhs,
+		__kernel void matrix_multiply(__global double* dest, __global const double* src_lhs, __global const double* src_rhs,
 									  const uint src_lhs_width, const uint src_rhs_width)
 		{
 			const uint width = get_global_size(0);

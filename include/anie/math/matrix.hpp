@@ -25,7 +25,11 @@ namespace anie
 		matrix& operator=(matrix&& matrix) noexcept;
 		bool operator==(const matrix& matrix) const;
 		bool operator!=(const matrix& matrix) const;
+		matrix operator+(const matrix& matrix) const;
+		matrix operator-(const matrix& matrix) const;
 		matrix operator*(const matrix& matrix) const;
+		matrix& operator+=(const matrix& matrix);
+		matrix& operator-=(const matrix& matrix);
 
 	public:
 		std::size_t width() const noexcept;
@@ -41,12 +45,18 @@ namespace anie
 		{
 			boost::compute::copy(data_.begin(), data_.begin() + size, start, device_.queue());
 		}
+		void copy_from(const std::vector<arithemtic_type>& vector);
+		template<typename Iterator_>
+		void copy_from(Iterator_ start, Iterator_ end)
+		{
+			boost::compute::copy(start, end, data_.begin(), device_.queue());
+		}
 
 	public:
 		anie::device device() const noexcept;
 		std::size_t height() const noexcept;
 
-	public:
+	private:
 		boost::compute::vector<arithemtic_type> data_;
 		anie::device device_;
 		std::size_t height_;

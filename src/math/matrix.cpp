@@ -53,6 +53,14 @@ namespace anie
 
 		return !boost::compute::equal(data_.begin(), data_.end(), matrix.data_.begin(), matrix.data_.end(), device_.queue());
 	}
+	matrix matrix::operator+(const matrix& matrix) const
+	{
+		return anie::matrix(*this) += matrix;
+	}
+	matrix matrix::operator-(const matrix& matrix) const
+	{
+		return anie::matrix(*this) -= matrix;
+	}
 	matrix matrix::operator*(const matrix& matrix) const
 	{
 		assert(device_ == matrix.device_);
@@ -62,7 +70,7 @@ namespace anie
 
 		assert(width == matrix.height_);
 
-		static const std::size_t global_work_size[] = { matrix_width, height_ };
+		const std::size_t global_work_size[] = { matrix_width, height_ };
 
 		static boost::compute::program program =
 			boost::compute::program::build_with_source(details::kernel_matrix_multiply, device_.context());
@@ -78,6 +86,40 @@ namespace anie
 		device_.queue().enqueue_nd_range_kernel(kernel, 2, nullptr, global_work_size, nullptr);
 		return result;
 	}
+	matrix& matrix::operator+=(const matrix& matrix)
+	{
+		assert(device_ == matrix.device_);
+		assert(data_.size() == matrix.data_.size());
+		assert(height_ == matrix.height_);
+
+		static boost::compute::program program =
+			boost::compute::program::build_with_source(details::kernel_matrix_add, device_.context());
+		boost::compute::kernel kernel = program.create_kernel("matrix_add");
+
+		kernel.set_arg(0, data_);
+		kernel.set_arg(1, matrix.data_);
+		kernel.set_arg(2, static_cast<std::uint32_t>(data_.size() / height_));
+
+		device_.queue().enqueue_1d_range_kernel(kernel, 0, height_, 0);
+		return *this;
+	}
+	matrix& matrix::operator-=(const matrix& matrix)
+	{
+		assert(device_ == matrix.device_);
+		assert(data_.size() == matrix.data_.size());
+		assert(height_ == matrix.height_);
+
+		static boost::compute::program program =
+			boost::compute::program::build_with_source(details::kernel_matrix_sub, device_.context());
+		boost::compute::kernel kernel = program.create_kernel("matrix_sub");
+
+		kernel.set_arg(0, data_);
+		kernel.set_arg(1, matrix.data_);
+		kernel.set_arg(2, static_cast<std::uint32_t>(data_.size() / height_));
+
+		device_.queue().enqueue_1d_range_kernel(kernel, 0, height_, 0);
+		return *this;
+	}
 
 	std::size_t matrix::width() const noexcept
 	{
@@ -92,6 +134,10 @@ namespace anie
 		}
 
 		copy_to(vector.data());
+	}
+	void matrix::copy_from(const std::vector<arithemtic_type>& vector)
+	{
+		copy_from(vector.begin(), vector.end());
 	}
 
 	anie::device matrix::device() const noexcept

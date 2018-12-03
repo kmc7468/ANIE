@@ -6,6 +6,8 @@
 
 namespace anie::details
 {
+	ANIE_EXPORT	extern const std::string kernel_matrix_add;
+	ANIE_EXPORT	extern const std::string kernel_matrix_sub;
 	ANIE_EXPORT extern const std::string kernel_matrix_multiply;
 }
 
