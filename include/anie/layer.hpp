@@ -2,6 +2,7 @@
 #define ANIE_HEADER_LAYER_HPP
 #include <anie/config.hpp>
 
+#include <anie/device.hpp>
 #include <anie/math/matrix.hpp>
 
 #include <iostream>
@@ -18,7 +19,7 @@ namespace anie
 		virtual ~layer() = default;
 
 	protected:
-		layer() noexcept = default;
+		layer(const anie::device& device) noexcept;
 
 	public:
 		layer& operator=(const layer& layer) = delete;
@@ -33,6 +34,12 @@ namespace anie
 
 		virtual matrix forward(const matrix& z) const = 0;
 		virtual matrix backward(const matrix& d) = 0;
+
+	public:
+		anie::device device() const noexcept;
+
+	private:
+		anie::device device_;
 	};
 
 	using layer_ptr = std::shared_ptr<layer>;
