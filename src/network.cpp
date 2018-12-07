@@ -1,7 +1,5 @@
 #include <anie/network.hpp>
 
-#include <utility>
-
 namespace anie
 {
 	network::network(const anie::device& device)
@@ -17,6 +15,31 @@ namespace anie
 		layers_ = std::move(network.layers_);
 
 		return *this;
+	}
+	network& network::operator<<(const layer_ptr& layer)
+	{
+		return add_layer(layer), *this;
+	}
+	network& network::operator<<(layer_ptr&& layer)
+	{
+		return add_layer(std::move(layer)), *this;
+	}
+	network& network::operator<<(const layer_generator_ptr& layer)
+	{
+		return add_layer(layer), *this;
+	}
+
+	void network::add_layer(const layer_ptr& layer)
+	{
+		layers_.push_back(layer);
+	}
+	void network::add_layer(layer_ptr&& layer)
+	{
+		layers_.push_back(std::move(layer));
+	}
+	void network::add_layer(const layer_generator_ptr& layer)
+	{
+		layers_.push_back((*layer)(device_));
 	}
 
 	anie::device network::device() const noexcept
