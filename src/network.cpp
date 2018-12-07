@@ -1,5 +1,7 @@
 #include <anie/network.hpp>
 
+#include <cassert>
+
 namespace anie
 {
 	network::network(const anie::device& device)
@@ -31,15 +33,33 @@ namespace anie
 
 	void network::add_layer(const layer_ptr& layer)
 	{
+		assert(device_ == layer->device());
+
 		layers_.push_back(layer);
 	}
 	void network::add_layer(layer_ptr&& layer)
 	{
+		assert(device_ == layer->device());
+
 		layers_.push_back(std::move(layer));
 	}
 	void network::add_layer(const layer_generator_ptr& layer)
 	{
 		layers_.push_back((*layer)(device_));
+	}
+
+	matrix network::compute(const matrix& x) const
+	{
+		assert(device_ == x.device());
+
+		matrix mat(x);
+
+		for (const layer_ptr& layer : layers_)
+		{
+			mat = layer->forward(mat);
+		}
+
+		return mat;
 	}
 
 	anie::device network::device() const noexcept

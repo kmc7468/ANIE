@@ -5,6 +5,8 @@
 #include <anie/device.hpp>
 #include <anie/layer.hpp>
 
+#include <iostream>
+
 namespace anie
 {
 	class ANIE_EXPORT activation_layer : public layer

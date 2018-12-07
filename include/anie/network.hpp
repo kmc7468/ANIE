@@ -38,6 +38,8 @@ namespace anie
 		void add_layer(layer_ptr&& layer);
 		void add_layer(const layer_generator_ptr& layer);
 
+		matrix compute(const matrix& x) const;
+
 	public:
 		anie::device device() const noexcept;
 

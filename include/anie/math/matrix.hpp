@@ -13,6 +13,12 @@ namespace anie
 	class ANIE_EXPORT matrix final
 	{
 	public:
+		using iterator = boost::compute::vector<arithemtic_type>::iterator;
+		using const_iterator = boost::compute::vector<arithemtic_type>::const_iterator;
+		using reverse_iterator = boost::compute::vector<arithemtic_type>::reverse_iterator;
+		using const_reverse_iterator = boost::compute::vector<arithemtic_type>::const_reverse_iterator;
+
+	public:
 		explicit matrix(const anie::device& device) noexcept;
 		matrix(const anie::device& device, std::size_t size);
 		matrix(const anie::device& device, std::size_t width, std::size_t height);
@@ -53,6 +59,19 @@ namespace anie
 		}
 
 		matrix transpose() const;
+
+		iterator begin();
+		const_iterator begin() const;
+		const_iterator cbegin() const;
+		iterator end();
+		const_iterator end() const;
+		const_iterator cend() const;
+		reverse_iterator rbegin();
+		const_reverse_iterator rbegin() const;
+		const_reverse_iterator crbegin() const;
+		reverse_iterator rend();
+		const_reverse_iterator rend() const;
+		const_reverse_iterator crend() const;
 
 	public:
 		anie::device device() const noexcept;

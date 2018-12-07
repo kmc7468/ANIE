@@ -8,7 +8,7 @@
 namespace anie
 {
 	matrix::matrix(const anie::device& device) noexcept
-		: device_(device)
+		: data_(device.context()), device_(device)
 	{}
 	matrix::matrix(const anie::device& device, std::size_t size)
 		: data_(size * size, device.context()), device_(device), height_(size)
@@ -17,10 +17,10 @@ namespace anie
 		: data_(width * height, device.context()), device_(device), height_(height)
 	{}
 	matrix::matrix(const matrix& matrix)
-		: data_(matrix.data_), device_(matrix.device_), height_(matrix.height_)
+		: data_(matrix.data_, matrix.device_.queue()), device_(matrix.device_), height_(matrix.height_)
 	{}
 	matrix::matrix(matrix&& matrix) noexcept
-		: data_(std::move(matrix.data_)), device_(std::move(matrix.device_)), height_(matrix.height_)
+		: data_(std::move(matrix.data_), matrix.device_.queue()), device_(std::move(matrix.device_)), height_(matrix.height_)
 	{
 		matrix.height_ = 0;
 	}
@@ -28,7 +28,7 @@ namespace anie
 	matrix& matrix::operator=(const matrix& matrix)
 	{
 		assert(device_ == matrix.device_);
-
+		
 		data_ = matrix.data_;
 		height_ = matrix.height_;
 		return *this;
@@ -155,6 +155,55 @@ namespace anie
 
 		device_.queue().enqueue_1d_range_kernel(kernel, 0, height_, 0);
 		return result;
+	}
+
+	matrix::iterator matrix::begin()
+	{
+		return data_.begin();
+	}
+	matrix::const_iterator matrix::begin() const
+	{
+		return data_.begin();
+	}
+	matrix::const_iterator matrix::cbegin() const
+	{
+		return data_.cbegin();
+	}
+	matrix::iterator matrix::end()
+	{
+		return data_.end();
+	}
+	matrix::const_iterator matrix::end() const
+	{
+		return data_.end();
+	}
+	matrix::const_iterator matrix::cend() const
+	{
+		return data_.cend();
+	}
+	matrix::reverse_iterator matrix::rbegin()
+	{
+		return data_.rbegin();
+	}
+	matrix::const_reverse_iterator matrix::rbegin() const
+	{
+		return data_.rbegin();
+	}
+	matrix::const_reverse_iterator matrix::crbegin() const
+	{
+		return data_.crbegin();
+	}
+	matrix::reverse_iterator matrix::rend()
+	{
+		return data_.rend();
+	}
+	matrix::const_reverse_iterator matrix::rend() const
+	{
+		return data_.rend();
+	}
+	matrix::const_reverse_iterator matrix::crend() const
+	{
+		return data_.crend();
 	}
 
 	anie::device matrix::device() const noexcept

@@ -1,0 +1,1 @@
+#include <anie/activation_layers/sigmoid_layer.hpp>
