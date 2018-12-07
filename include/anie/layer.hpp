@@ -43,6 +43,26 @@ namespace anie
 	};
 
 	using layer_ptr = std::shared_ptr<layer>;
+
+	class ANIE_EXPORT layer_generator
+	{
+	public:
+		layer_generator(const layer_generator& generator) = delete;
+		layer_generator(layer_generator&& generator) = delete;
+		virtual ~layer_generator() = default;
+
+	protected:
+		layer_generator() noexcept = default;
+
+	public:
+		layer_generator& operator=(const layer_generator& generator) = delete;
+		layer_generator& operator=(layer_generator&& generator) = delete;
+		bool operator==(const layer_generator& generator) = delete;
+		bool operator!=(const layer_generator& generator) = delete;
+		virtual layer_ptr operator()(const anie::device& device) const = 0;
+	};
+
+	using layer_generator_ptr = std::shared_ptr<layer_generator>;
 }
 
 #endif
